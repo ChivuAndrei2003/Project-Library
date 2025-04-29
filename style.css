@@ -1,0 +1,132 @@
+body{
+    min-height: 100vh;
+}
+html,body{
+    height: 100%;
+}
+.container{
+    display: grid;
+    grid-template-columns: 1fr ;
+    grid-template-rows:1fr 8fr;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    
+}
+.library-header h1 {
+    font-size: 3rem; /* sau cât de mare vrei */
+    font-weight: bold; /* opțional, să fie mai gros */
+    
+    
+}
+.library-header{
+    align-self: center;
+    justify-self: center;
+    display: grid;
+    
+    
+    
+}
+
+.library-content{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows:1fr 1fr;
+    column-gap: 20px;
+    padding: 20px;
+    margin-top:0;  
+   
+    
+}
+
+.button-read-status,
+.button-remove-book{
+    border-radius:10px;
+    margin-bottom: 10px;
+    border: none;
+    padding: 12px 28px;
+    background-color: #27262621;
+
+}
+
+.button-add-book{
+    border-radius: 10px;
+    border: none;
+    padding:10px;
+    background-color: rgba(127, 255, 131, 0.75);
+}
+
+.button-add-book:hover{
+    background-color: rgb(113, 255, 118);
+}
+.button-remove-book{
+    background-color: rgba(255, 33, 111, 0.435);
+}
+
+.button-remove-book:hover{
+    background-color: rgb(255, 33, 111)
+}
+
+.button-read-status:hover{
+    background-color: #27262668;
+
+}
+
+.card h1 {
+    margin-top: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-weight: bold;
+    
+}
+/* */
+
+.card{
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 1fr; /* mărește spațiul interior */
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    min-height: 1fr; /* mai înalt */
+    font-size: 2rem; /* mărește textul din card */ 
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+   
+     
+    
+    
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .library-content{
+        grid-template-columns: 1fr;
+    }
+  }
+
+  @import "modern-normalize";
+
+  :root {
+    line-height: 1.5;
+  }
+  
+  h1, h2, h3, h4, h5, figure, p, ol, ul {
+    margin: 0;
+  }
+  
+  ol[role="list"], ul[role="list"] {
+    list-style: none;
+    padding-inline: 0;
+  }
+  
+  h1, h2, h3, h4, h5 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  
+  img {
+    display: block;
+    max-inline-size: 100%;
+  }
