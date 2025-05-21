@@ -14,8 +14,8 @@ html,body{
     
 }
 .library-header h1 {
-    font-size: 3rem; /* sau cât de mare vrei */
-    font-weight: bold; /* opțional, să fie mai gros */
+    font-size: 3rem; /* sau cat de mare vrei */
+    font-weight: bold; /* optional, sa fie mai gros */
     
     
 }
@@ -42,10 +42,17 @@ html,body{
 .button-read-status,
 .button-remove-book{
     border-radius:10px;
-    margin-bottom: 10px;
+   
     border: none;
     padding: 12px 28px;
     background-color: #27262621;
+    width: 250px;
+    text-align: center;
+    justify-self: center;
+    display: grid;
+    margin-bottom: 11px;
+ 
+    
 
 }
 
@@ -84,14 +91,16 @@ html,body{
 .card{
     background-color: #f0f0f0;
     border: 1px solid #ccc;
-    padding: 1fr; /* mărește spațiul interior */
+    padding: 1fr; /* mareste spatiul interior */
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     min-height: 1fr; /* mai înalt */
-    font-size: 2rem; /* mărește textul din card */ 
+    font-size: 2.3rem; /* mareste textul din card */ 
     text-align: center;
     margin-top: 10px;
     margin-bottom: 10px;
+    display: grid;
+    align-content: center;
    
      
     
@@ -99,14 +108,14 @@ html,body{
 }
 
 
-
+@import "modern-normalize";
 @media screen and (max-width: 768px) {
     .library-content{
         grid-template-columns: 1fr;
     }
   }
 
-  @import "modern-normalize";
+
 
   :root {
     line-height: 1.5;
