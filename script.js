@@ -1,213 +1,169 @@
-// script.js
+// --- Book Class ---
+class Book {
+  constructor(title, author, pages, read, id = crypto.randomUUID()) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read; // "YES" or "NO"
+    this.id = id; // Ensure id is assigned
+  }
 
-// --- Data Storage ---
-
-// Array to store all book objects. This is the central place where your library data lives.
-const myLibrary = [];
-
-// --- Book Object ---
-
-// Constructor function for creating Book objects.
-// A constructor is like a blueprint for creating objects with specific properties and methods.
-function Book(title, author, pages, read, id) {
-  // 'this' refers to the specific instance of the Book object being created.
-  this.title = title;       // The title of the book (String)
-  this.author = author;     // The author of the book (String)
-  this.pages = pages;       // The number of pages (Number/String)
-  this.read = read;         // Read status, should be "YES" or "NO" (String)
-  // Assign the provided id or generate a new unique one if none is given.
-  // crypto.randomUUID() generates a universally unique identifier.
-  this.id = id || crypto.randomUUID();
-
-  // Optional: A method directly on the object to log its info (useful for debugging).
-  // We generally prefer putting methods on the prototype (see below) for efficiency,
-  // but this works too for simple cases.
-  // this.info = function() {
-  //   console.log(`Title: ${this.title}, Author: ${this.author}, Pages: ${this.pages}, Read: ${this.read}, ID: ${this.id}`);
-  // };
-}
-
-// Method to toggle the read status of a book instance.
-// Adding methods to the 'prototype' means all Book objects share this *same* function,
-// saving memory compared to defining it inside the constructor for every book.
-Book.prototype.toggleRead = function() {
-  // If the current status is "YES", change it to "NO", otherwise change it to "YES".
-  this.read = this.read === "YES" ? "NO" : "YES";
-  console.log(`Toggled read status for ${this.title} to: ${this.read}`); // Log change
-};
-
-// --- Library Management Functions ---
-
-// Function to add a new book to the myLibrary array.
-function addBookToLibrary(title, author, pages, read) {
-  // Create a new Book instance using the constructor.
-  const newBook = new Book(title, author, pages, read);
-  // Add the newly created book object to the end of the myLibrary array.
-  myLibrary.push(newBook);
-  console.log('Added book:', newBook); // Log added book
-  console.log('Current Library:', myLibrary); // Log current state of the array
-  // Return the newly created book object (optional, but can be useful).
-  return newBook;
-}
-
-// Function to remove a book from the myLibrary array by its ID.
-function removeBookFromLibrary(bookId) {
-  // Find the index (position) of the book with the matching ID in the array.
-  const bookIndex = myLibrary.findIndex(book => book.id === bookId);
-  // Check if a book with that ID was actually found (index will be -1 if not found).
-  if (bookIndex > -1) {
-    // Remove 1 element from the array starting at the found index.
-    myLibrary.splice(bookIndex, 1);
-    console.log(`Removed book with ID: ${bookId}`); // Log removal
-    console.log('Current Library:', myLibrary); // Log current state
-  } else {
-    console.warn(`Could not find book with ID ${bookId} to remove.`); // Warn if not found
+  toggleRead() {
+    // Corrected logic:
+    this.read = this.read === "YES" ? "NO" : "YES";
+    console.log(`Toggled read status for ${this.title} to: ${this.read}`);
   }
 }
 
-// --- DOM Manipulation & Rendering ---
+// --- Library Class ---
+class Library {
+  constructor() {
+    this.books = []; // Array to store all book objects
 
-// Get references to the necessary HTML elements.
-const libraryContentDiv = document.querySelector('.library-content'); // Container for book cards
-const addBookBTN = document.querySelector(".button-add-book");      // "Add book" button
-const dialog = document.querySelector(".myDialog");                 // The pop-up dialog/modal
-const form = document.getElementById("nameForm");                   // The form inside the dialog
-const titleInput = document.getElementById('titleInput');           // Form input for title
-const authorInput = document.getElementById('authorInput');         // Form input for author
-const pagesInput = document.getElementById('pagesInput');           // Form input for pages
-const readCheckbox = document.getElementById('checkbox');           // Form checkbox for read status
+    // DOM Element References
+    this.libraryContentDiv = document.querySelector('.library-content');
+    this.addBookBTN = document.querySelector(".button-add-book");
+    this.dialog = document.querySelector(".myDialog");
+    this.form = document.getElementById("nameForm");
+    this.titleInput = document.getElementById('titleInput');
+    this.authorInput = document.getElementById('authorInput');
+    this.pagesInput = document.getElementById('pagesInput');
+    this.readCheckbox = document.getElementById('checkbox');
 
-// Function to create the HTML element (a 'card') for a single book object.
-function createBookCard(book) {
-  // Create the main container div for the card.
-  const card = document.createElement('div');
-  card.classList.add('card'); // Add the 'card' class for styling.
-  card.dataset.id = book.id; // Store the book's unique ID on the element using a data-* attribute.
+    this.initEventListeners();
+    this.loadInitialBooks(); // Load initial books and render
+  }
 
-  // Create and append the title element.
-  const titleDiv = document.createElement('div');
-  titleDiv.classList.add('card-title');
-  const titleH1 = document.createElement('h1');
-  titleH1.textContent = book.title; // Set text from the book object.
-  titleDiv.appendChild(titleH1);
-  card.appendChild(titleDiv);
+  addBook(title, author, pages, read) {
+    const newBook = new Book(title, author, pages, read);
+    this.books.push(newBook);
+    console.log('Added book:', newBook);
+    console.log('Current Library:', this.books);
+    this.render(); // Re-render after adding a book
+    return newBook;
+  }
 
-  // Create and append the author element.
-  const authorDiv = document.createElement('div');
-  authorDiv.classList.add('card-author');
-  const authorP = document.createElement('p');
-  authorP.textContent = book.author; // Set text from the book object.
-  authorDiv.appendChild(authorP);
-  card.appendChild(authorDiv);
+  removeBook(bookId) {
+    const bookIndex = this.books.findIndex(book => book.id === bookId);
+    if (bookIndex > -1) {
+      this.books.splice(bookIndex, 1);
+      console.log(`Removed book with ID: ${bookId}`);
+      console.log('Current Library:', this.books);
+      this.render(); // Re-render after removing a book
+    } else {
+      console.warn(`Could not find book with ID ${bookId} to remove.`);
+    }
+  }
 
-  // Create and append the pages element.
-  const pagesDiv = document.createElement('div');
-  pagesDiv.classList.add('card-pages-number');
-  const pagesP = document.createElement('p');
-  pagesP.textContent = `${book.pages} pages`; // Set text from the book object.
-  pagesDiv.appendChild(pagesP);
-  card.appendChild(pagesDiv);
+  toggleBookReadStatus(bookId) {
+    const book = this.books.find(b => b.id === bookId);
+    if (book) {
+      book.toggleRead();
+      this.render(); // Re-render to reflect the change in the UI
+    } else {
+      console.warn(`Could not find book with ID ${bookId} to toggle read status.`);
+    }
+  }
 
-  // Create the "Read/Unread" status button.
-  const readStatusButton = document.createElement('button');
-  readStatusButton.classList.add('button-read-status');
-  const readStatusP = document.createElement('p');
-  // Set initial text based on the book's 'read' property.
-  readStatusP.textContent = book.read === 'YES' ? 'Read' : 'Unread';
-  readStatusButton.appendChild(readStatusP);
-  // Add event listener for toggling read status.
-  readStatusButton.addEventListener('click', () => {
-    book.toggleRead(); // Update the 'read' property in the book object.
-    // Update the button's text immediately to reflect the change.
+  createBookCard(book) {
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.dataset.id = book.id;
+
+    const titleDiv = document.createElement('div');
+    titleDiv.classList.add('card-title');
+    const titleH1 = document.createElement('h1');
+    titleH1.textContent = book.title;
+    titleDiv.appendChild(titleH1);
+    card.appendChild(titleDiv);
+
+    const authorDiv = document.createElement('div');
+    authorDiv.classList.add('card-author');
+    const authorP = document.createElement('p');
+    authorP.textContent = book.author;
+    authorDiv.appendChild(authorP);
+    card.appendChild(authorDiv);
+
+    const pagesDiv = document.createElement('div');
+    pagesDiv.classList.add('card-pages-number');
+    const pagesP = document.createElement('p');
+    pagesP.textContent = `${book.pages} pages`;
+    pagesDiv.appendChild(pagesP);
+    card.appendChild(pagesDiv);
+
+    const readStatusButton = document.createElement('button');
+    readStatusButton.classList.add('button-read-status');
+    const readStatusP = document.createElement('p');
     readStatusP.textContent = book.read === 'YES' ? 'Read' : 'Unread';
-  });
-  card.appendChild(readStatusButton);
+    readStatusButton.appendChild(readStatusP);
+    readStatusButton.addEventListener('click', () => {
+      this.toggleBookReadStatus(book.id); // Use Library method
+    });
+    card.appendChild(readStatusButton);
 
-  // Create the "Remove" button.
-  const removeButton = document.createElement('button');
-  removeButton.classList.add('button-remove-book');
-  const removeP = document.createElement('p');
-  removeP.textContent = 'Remove';
-  removeButton.appendChild(removeP);
-  // Add event listener for removing the book.
-  removeButton.addEventListener('click', () => {
-    removeBookFromLibrary(book.id); // Remove book from the myLibrary array.
-    renderLibrary(); // Re-render the entire library display.
-    // Alternatively, you could just remove the specific card: card.remove();
-    // But re-rendering ensures consistency if other operations happen.
-  });
-  card.appendChild(removeButton);
+    const removeButton = document.createElement('button');
+    removeButton.classList.add('button-remove-book');
+    const removeP = document.createElement('p');
+    removeP.textContent = 'Remove';
+    removeButton.appendChild(removeP);
+    removeButton.addEventListener('click', () => {
+      this.removeBook(book.id); // Use Library method
+    });
+    card.appendChild(removeButton);
 
-  // Return the fully constructed card element.
-  return card;
-}
+    return card;
+  }
 
-// Function to render the entire library to the DOM.
-// It clears the current display and rebuilds it from the myLibrary array.
-function renderLibrary() {
-  console.log("Rendering library..."); // Log when rendering starts
-  // Clear any existing cards from the display area.
-  libraryContentDiv.innerHTML = ''; // Remove all child elements.
+  render() {
+    console.log("Rendering library...");
+    this.libraryContentDiv.innerHTML = ''; // Clear existing cards
 
-  // Check if the library is empty.
-  if (myLibrary.length === 0) {
-    console.log("Library is empty.");
-    // Optional: Display a message to the user.
-    // const emptyMessage = document.createElement('p');
-    // emptyMessage.textContent = "Your library is empty. Add some books!";
-    // libraryContentDiv.appendChild(emptyMessage);
-  } else {
-    // Loop through each book object in the myLibrary array.
-    myLibrary.forEach(book => {
-      // Create the HTML card element for the current book.
-      const bookCard = createBookCard(book);
-      // Append the created card to the library display area.
-      libraryContentDiv.appendChild(bookCard);
+    if (this.books.length === 0) {
+      console.log("Library is empty.");
+      // Optional: Display a message
+      // const emptyMessage = document.createElement('p');
+      // emptyMessage.textContent = "Your library is empty. Add some books!";
+      // this.libraryContentDiv.appendChild(emptyMessage);
+    } else {
+      this.books.forEach(book => {
+        const bookCard = this.createBookCard(book);
+        this.libraryContentDiv.appendChild(bookCard);
+      });
+    }
+    console.log("Rendering complete.");
+  }
+
+  initEventListeners() {
+    this.addBookBTN.addEventListener("click", () => {
+      this.form.reset();
+      this.dialog.showModal();
+    });
+
+    this.form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const title = this.titleInput.value;
+      const author = this.authorInput.value;
+      const pages = this.pagesInput.value;
+      const readStatus = this.readCheckbox.checked ? "YES" : "NO";
+
+      this.addBook(title, author, pages, readStatus);
+      this.dialog.close();
+      // No need to call render() here as addBook() already does it.
     });
   }
-  console.log("Rendering complete.");
+
+  loadInitialBooks() {
+    // Add some initial books for testing/demonstration.
+    this.addBook("The Hobbit", "J.R.R. Tolkien", 295, "YES");
+    this.addBook("1984", "George Orwell", 328, "NO");
+    this.addBook("To Kill a Mockingbird", "Harper Lee", 281, "YES");
+    // Note: render() will be called by each addBook, so a final explicit render()
+    // after all initial books isn't strictly necessary if addBook handles it.
+    // If addBook didn't call render, we would call this.render() here.
+  }
 }
 
-// --- Event Listeners ---
+// --- Application Initialization ---
 
-// Event listener for the "Add book" button.
-addBookBTN.addEventListener("click", () => {
-  form.reset(); // Clear the form fields before showing.
-  dialog.showModal(); // Open the dialog window.
-});
-
-// Event listener for the form submission inside the dialog.
-form.addEventListener("submit", (event) => {
-  // Prevent the default form submission behavior (which would try to navigate).
-  event.preventDefault();
-
-  // Retrieve the values entered by the user in the form fields.
-  const title = titleInput.value;
-  const author = authorInput.value;
-  const pages = pagesInput.value; // Get pages value
-  // Determine the read status based on whether the checkbox is checked.
-  const readStatus = readCheckbox.checked ? "YES" : "NO";
-
-  // Add the new book data to our library array.
-  addBookToLibrary(title, author, pages, readStatus);
-
-  // Close the dialog window.
-  dialog.close();
-
-  // Re-render the library display to include the new book.
-  renderLibrary();
-
-  // No need to reset form here, dialog.close() usually preserves state
-  // until reopened, and we reset it before showing anyway.
-});
-
-// --- Initial Setup ---
-
-// Optional: Add some initial books to the library for testing/demonstration.
-// Make sure these use the correct parameters for the addBookToLibrary function.
-addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, "YES");
-addBookToLibrary("1984", "George Orwell", 328, "NO");
-addBookToLibrary("To Kill a Mockingbird", "Harper Lee", 281, "YES");
-
-// Call renderLibrary() once when the script loads to display any initial books.
-renderLibrary();
+// Create an instance of the Library. This will also set up event listeners and render initial books.
+const myAppLibrary = new Library();
