@@ -15,32 +15,20 @@ function Book(title, author, pages, read, id) {
   this.author = author;     // The author of the book (String)
   this.pages = pages;       // The number of pages (Number/String)
   this.read = read;         // Read status, should be "YES" or "NO" (String)
-  // Assign the provided id or generate a new unique one if none is given.
-  // crypto.randomUUID() generates a universally unique identifier.
+  
   this.id = id || crypto.randomUUID();
-
-  // Optional: A method directly on the object to log its info (useful for debugging).
-  // We generally prefer putting methods on the prototype (see below) for efficiency,
-  // but this works too for simple cases.
-  // this.info = function() {
-  //   console.log(`Title: ${this.title}, Author: ${this.author}, Pages: ${this.pages}, Read: ${this.read}, ID: ${this.id}`);
-  // };
 }
 
 // Method to toggle the read status of a book instance.
-// Adding methods to the 'prototype' means all Book objects share this *same* function,
-// saving memory compared to defining it inside the constructor for every book.
 Book.prototype.toggleRead = function() {
-  // If the current status is "YES", change it to "NO", otherwise change it to "YES".
+ 
   this.read = this.read === "YES" ? "NO" : "YES";
   console.log(`Toggled read status for ${this.title} to: ${this.read}`); // Log change
 };
 
 // --- Library Management Functions ---
-
-// Function to add a new book to the myLibrary array.
 function addBookToLibrary(title, author, pages, read) {
-  // Create a new Book instance using the constructor.
+
   const newBook = new Book(title, author, pages, read);
   // Add the newly created book object to the end of the myLibrary array.
   myLibrary.push(newBook);
@@ -133,8 +121,7 @@ function createBookCard(book) {
   removeButton.addEventListener('click', () => {
     removeBookFromLibrary(book.id); // Remove book from the myLibrary array.
     renderLibrary(); // Re-render the entire library display.
-    // Alternatively, you could just remove the specific card: card.remove();
-    // But re-rendering ensures consistency if other operations happen.
+   
   });
   card.appendChild(removeButton);
 
@@ -152,10 +139,6 @@ function renderLibrary() {
   // Check if the library is empty.
   if (myLibrary.length === 0) {
     console.log("Library is empty.");
-    // Optional: Display a message to the user.
-    // const emptyMessage = document.createElement('p');
-    // emptyMessage.textContent = "Your library is empty. Add some books!";
-    // libraryContentDiv.appendChild(emptyMessage);
   } else {
     // Loop through each book object in the myLibrary array.
     myLibrary.forEach(book => {
@@ -202,9 +185,6 @@ form.addEventListener("submit", (event) => {
 });
 
 // --- Initial Setup ---
-
-// Optional: Add some initial books to the library for testing/demonstration.
-// Make sure these use the correct parameters for the addBookToLibrary function.
 addBookToLibrary("The Hobbit", "J.R.R. Tolkien", 295, "YES");
 addBookToLibrary("1984", "George Orwell", 328, "NO");
 addBookToLibrary("To Kill a Mockingbird", "Harper Lee", 281, "YES");
