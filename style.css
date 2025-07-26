@@ -106,7 +106,13 @@ html,body{
     
     
 }
+#titleInput:invalid,
+#authorInput:invalid,
+#pagesInput:invalid,
+#checkbox:invalid {
+    border-color: red;
 
+}
 
 @import "modern-normalize";
 @media screen and (max-width: 768px) {
